@@ -1,5 +1,5 @@
 const app = {
-  server: "http://127.0.0.1:3000/classes/messages"
+  server: 'http://127.0.0.1:3000/classes/messages'
 };
 
 const entityMap = {
@@ -24,39 +24,37 @@ app.init = function() {
   setInterval(function() {
     app.clearMessages();
     app.fetch();
-  }, 10000)
+  }, 5000);
 };
 
 app.send = function(msg) {
   $.ajax({
-    type: "POST",
+    type: 'POST',
     data: JSON.stringify(msg),
     url: app.server,
-    dataType: "json",
+    dataType: 'json',
     headers: {
       'Accept': 'application/json'
     },
     success: function() {
-
     }
-  })
+  });
 };
 
 app.fetch = function() {
   $.ajax({
     method: 'GET',
     url: app.server,
-    data: {},
-    dataType: "json",
+    data: 'order=-createdAt',
+    dataType: 'json',
     success: function(data) {
       let allMessages = data['results'];
-      console.log(allMessages);
       for (let i = 0; i < data.results.length; i++) {
         app.renderRoom(allMessages[i].roomname);
         app.renderMessage(allMessages[i]);
       }
     }
-  })
+  });
 };
 
 app.escapeHTML = (string) => {
@@ -90,14 +88,14 @@ app.handleRoomClick = function() {
     let selected = $('#roomSelect').val();
     $('#chats').children().toggle(false);
     $('#chats').children(`#${selected}`).toggle(true);
-  })
+  });
 };
 
 app.handleUsernameClick = function() {
   $('#chats').on('click', '.username', function() {
     let className = $(this).text();
     $('.message').find(`#${className}`).parent().toggleClass('friend');
-  })
+  });
 };
 
 app.handleSubmit = function() {
@@ -107,19 +105,20 @@ app.handleSubmit = function() {
     let username = window.location.search.slice(10);
     msg.username = username;
     msg.room = $('.roomInput').val();
-    msg.text = $('.message').val();
+    msg.text = $('.messageInput').val();
     msg.createdAt = new Date();
     msg.createdAt = msg.createdAt.toLocaleDateString();
-    app.renderRoom(msg.room)
+    app.renderRoom(msg.room);
     app.send(msg);
-  })
+    app.fetch();
+  });
 };
 
 app.reload = function() {
   $('#reload').click(function() {
     app.clearMessages();
     app.init();
-  })
+  });
 };
 
 $(document).ready(function() {

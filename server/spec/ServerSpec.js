@@ -11,6 +11,21 @@ var waitForThen = function (test, cb) {
 };
 
 describe('Node Server Request Listener Function', function() {
+  it('should have default CORS headers', function() {
+    var req = new stubs.request('/classes/messages', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._headers).to.deep.equal({
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'access-control-allow-headers': 'content-type, accept',
+      'access-control-max-age': 10,
+      'Content-Type': 'text/plain'
+    });
+  });
+
   it('Should answer GET requests for /classes/messages with a 200 status code', function() {
     // This is a fake server request. Normally, the server would provide this,
     // but we want to test our function's behavior totally independent of the server code

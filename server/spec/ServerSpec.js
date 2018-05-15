@@ -26,6 +26,15 @@ describe('Node Server Request Listener Function', function() {
     });
   });
 
+  it('should invoke response.end() for every HTTP request', function() {
+    var req = new stubs.request('/classes/messages', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._ended).to.equal(true);
+  });
+
   it('should append new messages to the same message body with each HTTP request', function() {
     var stubMsg = {
       username: 'Jono',

@@ -50,7 +50,7 @@ app.fetch = function() {
     success: function(data) {
       let allMessages = data['results'];
       for (let i = 0; i < data.results.length; i++) {
-        app.renderRoom(allMessages[i].roomname);
+        app.renderRoom(allMessages[i].room);
         app.renderMessage(allMessages[i]);
       }
     }
@@ -74,7 +74,7 @@ app.renderMessage = function(msg) {
     <div class=text>${msg.text}</div>
     <div class=room>${msg.room}</div>
   </div>`;
-  $('#chats').append(message);
+  $('#chats').prepend(message);
 };
 
 app.renderRoom = function(room) {
@@ -110,6 +110,7 @@ app.handleSubmit = function() {
     msg.createdAt = msg.createdAt.toLocaleDateString();
     app.renderRoom(msg.room);
     app.send(msg);
+    app.clearMessages();
     app.fetch();
   });
 };
